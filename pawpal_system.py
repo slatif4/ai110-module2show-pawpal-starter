@@ -1,4 +1,5 @@
 from dataclasses import dataclass, field
+from datetime import date
 from typing import List, Optional
 
 
@@ -12,15 +13,17 @@ class Owner:
 
     def add_pet(self, pet: "Pet") -> None:
         """Add a pet to the owner's list of pets."""
-        pass
+        if pet not in self.pets:
+            self.pets.append(pet)
 
     def remove_pet(self, pet: "Pet") -> None:
         """Remove a pet from the owner's list of pets."""
-        pass
+        if pet in self.pets:
+            self.pets.remove(pet)
 
     def get_pets(self) -> List["Pet"]:
         """Return the list of pets owned by this owner."""
-        pass
+        return self.pets
 
 
 @dataclass
@@ -32,15 +35,17 @@ class Pet:
 
     def add_task(self, task: "Task") -> None:
         """Assign a task to this pet."""
-        pass
+        if task not in self.tasks:
+            self.tasks.append(task)
 
     def remove_task(self, task: "Task") -> None:
         """Remove a task from this pet."""
-        pass
+        if task in self.tasks:
+            self.tasks.remove(task)
 
     def get_tasks(self) -> List["Task"]:
         """Return the list of tasks assigned to this pet."""
-        pass
+        return self.tasks
 
 
 @dataclass
@@ -55,11 +60,14 @@ class Task:
 
     def mark_complete(self) -> None:
         """Mark this task as completed."""
-        pass
+        self.completed = True
+        self.last_completed = date.today().isoformat()
 
     def is_due(self) -> bool:
         """Determine whether this task is due."""
-        pass
+        if self.last_completed is None:
+            return True
+        return self.frequency.lower() == "daily"
 
 
 class Scheduler:
@@ -71,12 +79,29 @@ class Scheduler:
 
     def generate_schedule(self) -> List[tuple]:
         """Generate a schedule of tasks for the owner and their pets."""
-        pass
+        candidates: List[tuple] = []
+        for pet in self.owner.get_pets():
+            for task in pet.get_tasks():
+                if task.is_due():
+                    candidates.append((pet, task))
+
+        candidates.sort(key=lambda pair: pair[1].priority, reverse=True)
+
+        selected: List[tuple] = []
+        total_time = 0.0
+        for pet, task in candidates:
+            if total_time + task.duration <= self.owner.available_time:
+                selected.append((pet, task))
+                total_time += task.duration
+
+        self.schedule = selected
+        return self.schedule
 
     def sort_by_priority(self) -> None:
         """Sort the scheduler tasks by priority."""
-        pass
+        self.schedule.sort(key=lambda pair: pair[1].priority, reverse=True)
 
     def check_time_constraints(self) -> bool:
         """Check if scheduled tasks fit within the owner's available time."""
-        pass
+        total = sum(task.duration for _, task in self.schedule)
+        return total <= self.owner.available_time
