@@ -14,6 +14,10 @@ class Owner:
         """Add a pet to the owner's list of pets."""
         pass
 
+    def remove_pet(self, pet: "Pet") -> None:
+        """Remove a pet from the owner's list of pets."""
+        pass
+
     def get_pets(self) -> List["Pet"]:
         """Return the list of pets owned by this owner."""
         pass
@@ -30,6 +34,10 @@ class Pet:
         """Assign a task to this pet."""
         pass
 
+    def remove_task(self, task: "Task") -> None:
+        """Remove a task from this pet."""
+        pass
+
     def get_tasks(self) -> List["Task"]:
         """Return the list of tasks assigned to this pet."""
         pass
@@ -41,6 +49,8 @@ class Task:
     duration: float
     priority: int
     frequency: str
+    pet_name: str
+    last_completed: Optional[str] = None
     completed: bool = False
 
     def mark_complete(self) -> None:
@@ -57,9 +67,9 @@ class Scheduler:
 
     def __init__(self, owner: Owner):
         self.owner = owner
-        self.schedule: List[Task] = []
+        self.schedule: List[tuple] = []
 
-    def generate_schedule(self) -> List[Task]:
+    def generate_schedule(self) -> List[tuple]:
         """Generate a schedule of tasks for the owner and their pets."""
         pass
 
