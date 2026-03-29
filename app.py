@@ -1,4 +1,5 @@
 import streamlit as st
+from pawpal_system import Owner, Pet, Task, Scheduler
 
 st.set_page_config(page_title="PawPal+", page_icon="🐾", layout="centered")
 
@@ -42,6 +43,7 @@ st.subheader("Quick Demo Inputs (UI only)")
 owner_name = st.text_input("Owner name", value="Jordan")
 pet_name = st.text_input("Pet name", value="Mochi")
 species = st.selectbox("Species", ["dog", "cat", "other"])
+available_time_minutes = st.number_input("Available time today (minutes)", min_value=10, max_value=1440, value=120)
 
 st.markdown("### Tasks")
 st.caption("Add a few tasks. In your final version, these should feed into your scheduler.")
@@ -71,18 +73,54 @@ else:
 st.divider()
 
 st.subheader("Build Schedule")
-st.caption("This button should call your scheduling logic once you implement it.")
+st.caption("Click to generate a task plan based on your tasks, priorities, and available time.")
 
 if st.button("Generate schedule"):
-    st.warning(
-        "Not implemented yet. Next step: create your scheduling logic (classes/functions) and call it here."
-    )
-    st.markdown(
-        """
-Suggested approach:
-1. Design your UML (draft).
-2. Create class stubs (no logic).
-3. Implement scheduling behavior.
-4. Connect your scheduler here and display results.
-"""
-    )
+    if not owner_name or not pet_name:
+        st.error("Please enter owner and pet names before generating a schedule.")
+    elif not st.session_state.tasks:
+        st.error("No tasks to schedule. Add tasks first.")
+    else:
+        owner = Owner(name=owner_name, available_time=float(available_time_minutes))
+        pet = Pet(name=pet_name, species=species, age=1)
+
+        priority_map = {"low": 1, "medium": 2, "high": 3}
+        for t in st.session_state.tasks:
+            task_obj = Task(
+                task_name=t["title"],
+                duration=float(t["duration_minutes"]),
+                priority=priority_map.get(t["priority"], 1),
+                frequency="daily",
+                pet_name=pet.name,
+            )
+            pet.add_task(task_obj)
+
+        owner.add_pet(pet)
+        scheduler = Scheduler(owner)
+        schedule = scheduler.generate_schedule()
+
+        if not schedule:
+            st.info("No tasks fit in the available time window. Try more available time or shorter tasks.")
+        else:
+            st.success("Schedule generated successfully!")
+            st.markdown("### Today's plan")
+            output = []
+            for idx, (scheduled_pet, scheduled_task) in enumerate(schedule, start=1):
+                output.append(
+                    {
+                        "Order": idx,
+                        "Task": scheduled_task.task_name,
+                        "Pet": scheduled_pet.name,
+                        "Duration (min)": scheduled_task.duration,
+                        "Priority": scheduled_task.priority,
+                    }
+                )
+            st.table(output)
+
+            chosen_minutes = sum(task.duration for _, task in schedule)
+            st.markdown(f"**Total scheduled time:** {chosen_minutes} minutes")
+            st.markdown(
+                f"**Available time:** {available_time_minutes} minutes\n"
+                "**Reasoning:** Tasks are selected by descending priority and included while staying within the available time limit."
+            )
+
