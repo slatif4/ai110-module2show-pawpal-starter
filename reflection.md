@@ -7,6 +7,17 @@
 - Briefly describe your initial UML design.
 - What classes did you include, and what responsibilities did you assign to each?
 
+My initial UML design has four classes:
+- Owner: stores the name of the owner and the available time per day.
+- Pet: stores the name of the pet, type of pet, and age of pet.
+- Task: stores the name of the task, duration of task in minutes, level of priority of task, and status of task.
+- Scheduler: takes an Owner with their pets and tasks, sorts by level of priority and time constraint, and generates a daily schedule.
+
+The three major user operations are:
+- Adding a pet.
+- Adding/editing tasks with duration and level of priority.
+- Generating a daily schedule based on available time and level of priority.
+
 **b. Design changes**
 
 - Did your design change during implementation?
