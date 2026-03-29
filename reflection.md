@@ -23,6 +23,8 @@ The three major user operations are:
 - Did your design change during implementation?
 - If yes, describe at least one change and why you made it.
 
+After asking Claude to review the skeleton, I made a number of minor changes. I added last_completed to the Task data structure to allow the scheduler to determine if a task is due. I added pet_name to the Task data structure to allow the scheduler to tag which pet the task is for. I also changed the schedule list in the Scheduler data structure to hold pairs of Pet and Task rather than just tasks, providing more context to the scheduler in creating the daily plan.
+
 ---
 
 ## 2. Scheduling Logic and Tradeoffs
