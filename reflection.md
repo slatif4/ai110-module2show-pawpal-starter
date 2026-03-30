@@ -34,10 +34,19 @@ After asking Claude to review the skeleton, I made a number of minor changes. I 
 - What constraints does your scheduler consider (for example: time, priority, preferences)?
 - How did you decide which constraints mattered most?
 
+The scheduler considers two main constraints: available time and task priority. The available time is set by the owner and limits how many tasks can be scheduled in a day. Tasks are added until the total duration reaches the limit. Priority is an integer where higher numbers mean 
+more important tasks, so the scheduler always picks the most critical tasks first when time is limited.
+
+I decided that time and priority mattered most because a pet owner has a fixed amount of time each day, and some tasks, like medication, are 
+more urgent than others, like grooming.Frequency (daily vs weekly) also plays a role; only tasks that are due today are included in the schedule.
+
 **b. Tradeoffs**
 
 - Describe one tradeoff your scheduler makes.
 - Why is that tradeoff reasonable for this scenario?
+
+The scheduler detects conflicts by checking for exact next_due date matches for the same pet, rather than checking for overlapping time 
+windows. This means two tasks scheduled at different times on the same day would not trigger a conflict warning. This tradeoff keeps the logic simple and readable while still catching the most common scheduling problem, duplicate tasks on the same day for the same pet.
 
 ---
 

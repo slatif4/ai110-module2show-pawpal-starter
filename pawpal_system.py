@@ -1,5 +1,5 @@
 from dataclasses import dataclass, field
-from datetime import date
+from datetime import date, timedelta
 from typing import List, Optional
 
 
@@ -55,13 +55,24 @@ class Task:
     priority: int
     frequency: str
     pet_name: str
-    last_completed: Optional[str] = None
+    next_due: Optional[str] = None
     completed: bool = False
+    last_completed: Optional[str] = None
 
     def mark_complete(self) -> None:
         """Mark this task as completed."""
         self.completed = True
-        self.last_completed = date.today().isoformat()
+        today = date.today()
+        self.last_completed = today.isoformat()
+
+        if self.frequency.lower() == "daily":
+            next_due_date = today + timedelta(days=1)
+            self.next_due = next_due_date.isoformat()
+        elif self.frequency.lower() == "weekly":
+            next_due_date = today + timedelta(days=7)
+            self.next_due = next_due_date.isoformat()
+        else:
+            self.next_due = None
 
     def is_due(self) -> bool:
         """Determine whether this task is due."""
@@ -100,6 +111,39 @@ class Scheduler:
     def sort_by_priority(self) -> None:
         """Sort the scheduler tasks by priority."""
         self.schedule.sort(key=lambda pair: pair[1].priority, reverse=True)
+
+    def sort_by_time(self) -> list:
+        """Sort scheduled tasks by duration and return sorted list."""
+        sorted_schedule = sorted(self.schedule, key=lambda pair: pair[1].duration)
+        return sorted_schedule
+
+    def filter_tasks(self, completed=None, pet_name=None) -> list:
+        """Filter scheduled tasks by completion status and/or pet name."""
+        results = []
+        for pet, task in self.schedule:
+            if completed is not None and task.completed != completed:
+                continue
+            if pet_name is not None and pet.name != pet_name:
+                continue
+            results.append((pet, task))
+        return results
+
+    def detect_conflicts(self) -> list:
+        """Return list of warnings for tasks with same pet and same next_due time."""
+        conflicts = []
+        key_map = {}
+        for pet, task in self.schedule:
+            if task.next_due is None:
+                continue
+            key = (pet.name, task.next_due)
+            key_map.setdefault(key, []).append(task)
+
+        for (pet_name, next_due), tasks in key_map.items():
+            if len(tasks) > 1:
+                conflicts.append(
+                    f"Conflict: {len(tasks)} tasks for {pet_name} are due at the same time ({next_due})."
+                )
+        return conflicts
 
     def check_time_constraints(self) -> bool:
         """Check if scheduled tasks fit within the owner's available time."""
