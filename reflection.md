@@ -66,7 +66,7 @@ referenced exact file names and described the exact behavior needed.
 
 At one point Claude suggested implementing detect_conflicts() using 
 next_due date matching. I evaluated this and accepted it but noted it 
-as a tradeoff — it only catches exact date matches, not overlapping 
+as a tradeoff, it only catches exact date matches, not overlapping 
 time windows. I verified every AI suggestion by running pytest and 
 testing the live Streamlit app in the browser before committing.
 
