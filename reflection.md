@@ -54,13 +54,21 @@ windows. This means two tasks scheduled at different times on the same day would
 
 **a. How you used AI**
 
-- How did you use AI tools during this project (for example: design brainstorming, debugging, refactoring)?
-- What kinds of prompts or questions were most helpful?
+I used Claude in VS Code as my primary AI tool throughout all phases 
+of this project. In Phase 1, I used it to brainstorm the UML design 
+and generate the Mermaid class diagram. In Phase 2, I used Agent mode 
+to implement the full class logic and create the demo script. In Phase 
+4, I used it to implement sorting, filtering, conflict detection, and 
+recurring task logic. The most helpful prompts were specific ones that 
+referenced exact file names and described the exact behavior needed.
 
 **b. Judgment and verification**
 
-- Describe one moment where you did not accept an AI suggestion as-is.
-- How did you evaluate or verify what the AI suggested?
+At one point Claude suggested implementing detect_conflicts() using 
+next_due date matching. I evaluated this and accepted it but noted it 
+as a tradeoff — it only catches exact date matches, not overlapping 
+time windows. I verified every AI suggestion by running pytest and 
+testing the live Streamlit app in the browser before committing.
 
 ---
 
@@ -68,13 +76,19 @@ windows. This means two tasks scheduled at different times on the same day would
 
 **a. What you tested**
 
-- What behaviors did you test?
-- Why were these tests important?
+I tested seven core behaviors: task completion status, adding tasks 
+to pets, scheduler priority and time constraints, duplicate task 
+prevention, sorting by duration, recurring task next_due calculation, 
+and conflict detection. These tests were important because they verify 
+both happy paths and edge cases like duplicate tasks and time limits.
 
 **b. Confidence**
 
-- How confident are you that your scheduler works correctly?
-- What edge cases would you test next if you had more time?
+I am confident at 4 out of 5 stars that the scheduler works correctly 
+for core use cases. All 7 tests pass consistently. Edge cases I would 
+test next include a pet with no tasks, an owner with zero available 
+time, tasks with the same priority, and weekly recurring tasks crossing 
+month boundaries.
 
 ---
 
@@ -82,12 +96,22 @@ windows. This means two tasks scheduled at different times on the same day would
 
 **a. What went well**
 
-- What part of this project are you most satisfied with?
+I am most satisfied with how the algorithmic layer came together in 
+Phase 4. The sorting, filtering, conflict detection, and recurring 
+task logic all worked after fixing one missing attribute. Using Claude 
+in VS Code to implement multiple features in one pass saved a lot of time.
 
 **b. What you would improve**
 
-- If you had another iteration, what would you improve or redesign?
+If I had another iteration I would add a time-slot system so tasks 
+could be scheduled at specific times of day rather than just fitting 
+within a total duration. I would also improve conflict detection to 
+check across different pets.
 
 **c. Key takeaway**
 
-- What is one important thing you learned about designing systems or working with AI on this project?
+The most important thing I learned is that AI tools are powerful 
+collaborators but require a human architect to stay in control. Claude 
+could generate code quickly, but I had to verify every suggestion by 
+running tests and checking the live app. Being specific with prompts 
+and using separate chat sessions for each phase kept the work organized.
