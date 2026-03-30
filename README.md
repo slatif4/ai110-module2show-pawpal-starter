@@ -62,3 +62,26 @@ python -m pytest
 All 7 tests pass. The system reliably handles core scheduling 
 behaviors. Edge cases like overlapping time windows and multi-day 
 scheduling would need additional testing.
+
+## ✨ Features
+- Owner and pet management
+- Task scheduling by priority and available time
+- Sorting tasks by duration
+- Filtering tasks by completion status
+- Recurring task support (daily/weekly next_due dates)
+- Conflict detection for same-pet same-day tasks
+
+## 🖥️ Smarter Scheduling
+PawPal+ now includes four algorithmic scheduling enhancements:
+1. Priority-aware task selection for higher-impact pet care actions.
+2. Available time constraints that ensure the plan fits the owner’s schedule.
+3. Duration-based sorting to efficiently allocate shorter tasks when needed.
+4. Recurring and conflict checks to keep plans consistent and avoid duplicate same-day entries per pet.
+
+## 📸 Demo
+![PawPal App image 1](images/image%201_app%20demo.jpeg)
+
+![PawPal App image 2](images/image%202_app%20demo.jpeg)
+
+## 🏗️ System Architecture
+![UML Diagram](images/uml_final.png)

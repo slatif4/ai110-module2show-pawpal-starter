@@ -124,3 +124,34 @@ if st.button("Generate schedule"):
                 "**Reasoning:** Tasks are selected by descending priority and included while staying within the available time limit."
             )
 
+            # New algorithmic feature outputs
+            sorted_schedule = scheduler.sort_by_time()
+            if sorted_schedule:
+                st.markdown("### Sorted schedule (by task duration)")
+                sorted_output = []
+                for idx, (scheduled_pet, scheduled_task) in enumerate(sorted_schedule, start=1):
+                    sorted_output.append(
+                        {
+                            "Order": idx,
+                            "Task": scheduled_task.task_name,
+                            "Pet": scheduled_pet.name,
+                            "Duration (min)": scheduled_task.duration,
+                            "Priority": scheduled_task.priority,
+                        }
+                    )
+                st.table(sorted_output)
+
+            conflicts = scheduler.detect_conflicts()
+            if conflicts:
+                st.markdown("### Conflicts detected")
+                for conflict in conflicts:
+                    st.warning(conflict)
+
+            incomplete_tasks = scheduler.filter_tasks(completed=False)
+            st.markdown("### Incomplete tasks filter")
+            if incomplete_tasks:
+                for pet, task in incomplete_tasks:
+                    st.info(f"{task.task_name} (Pet: {pet.name}, Duration: {task.duration} min, Priority: {task.priority})")
+            else:
+                st.info("No incomplete tasks at the moment.")
+
